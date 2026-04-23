@@ -74,7 +74,7 @@ jobs:
             -v ~/.ssh/id_rsa:/root/.ssh/id_rsa:ro \
             -v ~/.ssh/known_hosts:/root/.ssh/known_hosts:ro \
             -v $(pwd)/.vault_pass:/root/.vault_pass:ro \
-            cytopia/ansible:latest \
+            willhallonline/ansible:latest \
             ansible-playbook -i /ansible/inventories/setup.yml /ansible/playbook.yml --vault-password-file /root/.vault_pass
       - name: Cleanup vault password
         if: always()
