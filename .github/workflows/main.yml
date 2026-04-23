@@ -65,7 +65,17 @@ jobs:
           printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t ed25519 zakaria.chaouch.takima.school >> ~/.ssh/known_hosts
-      - name: Install Ansible
-        run: sudo apt-get update && sudo apt-get install -y ansible
-      - name: Deploy with Ansible
-        run: ansible-playbook -i ansible/inventories/setup.yml ansible/playbook.yml
+      - name: Create vault password file
+        run: echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > .vault_pass
+      - name: Run Ansible in Docker
+        run: |
+          docker run --rm \
+            -v $(pwd)/ansible:/ansible \
+            -v ~/.ssh/id_rsa:/root/.ssh/id_rsa:ro \
+            -v ~/.ssh/known_hosts:/root/.ssh/known_hosts:ro \
+            -v $(pwd)/.vault_pass:/root/.vault_pass:ro \
+            cytopia/ansible:latest \
+            ansible-playbook -i /ansible/inventories/setup.yml /ansible/playbook.yml --vault-password-file /root/.vault_pass
+      - name: Cleanup vault password
+        if: always()
+        run: rm -f .vault_pass
