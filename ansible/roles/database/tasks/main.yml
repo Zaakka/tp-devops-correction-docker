@@ -3,12 +3,12 @@
 - name: Run database
   community.docker.docker_container:
     name: database
-    image: kazaaaa/tp-devops-database:latest
+    image: "{{ dockerhub_username }}/tp-devops-database:latest" 
     pull: true
     state: started
     restart_policy: always
     env:
-      POSTGRES_PASSWORD: "pwd"
+      POSTGRES_PASSWORD: "{{ db_password }}"
     volumes:
       - db-volume:/var/lib/postgresql/data
     networks:
