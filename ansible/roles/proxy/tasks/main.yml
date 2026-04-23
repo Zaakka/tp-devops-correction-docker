@@ -1,0 +1,15 @@
+---
+# tasks file for roles/proxy
+- name: Run httpd
+  community.docker.docker_container:
+    name: httpd
+    image: kazaaaa/tp-devops-httpd:latest
+    pull: true
+    state: started
+    restart_policy: always
+    ports:
+      - "80:80"
+    networks:
+      - name: my-network
+  vars:
+    ansible_python_interpreter: /opt/docker_venv/bin/python3
