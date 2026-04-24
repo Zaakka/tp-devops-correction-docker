@@ -59,12 +59,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Setup SSH key
-        run: |
-          mkdir -p ~/.ssh
-          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -t ed25519 zakaria.chaouch.takima.school >> ~/.ssh/known_hosts
+      - name: Create SSH directory
+        run: mkdir -p ~/.ssh
+      - name: Write SSH key
+        run: printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+      - name: Set SSH key permissions
+        run: chmod 600 ~/.ssh/id_rsa
+      - name: Verify SSH key
+        run: head -1 ~/.ssh/id_rsa
+      - name: Add known hosts
+        run: ssh-keyscan -t ed25519 -T 10 zakaria.chaouch.takima.school >> ~/.ssh/known_hosts
+      - name: Test SSH connection
+        run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa admin@zakaria.chaouch.takima.school echo "SSH OK"
       - name: Install Ansible
         run: sudo apt-get update && sudo apt-get install -y ansible
       - name: Create vault password file
