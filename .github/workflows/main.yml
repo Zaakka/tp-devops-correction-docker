@@ -68,7 +68,7 @@ jobs:
       - name: Verify SSH key
         run: head -1 ~/.ssh/id_rsa
       - name: Add known hosts
-        run: ssh-keyscan -t ed25519 -T 10 zakaria.chaouch.takima.school >> ~/.ssh/known_hosts
+        run: ssh-keyscan -t ed25519 -T 10 zakaria.chaouch.takima.school >> ~/.ssh/known_hosts || true
       - name: Test SSH connection
         run: ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa admin@zakaria.chaouch.takima.school echo "SSH OK"
       - name: Install Ansible
