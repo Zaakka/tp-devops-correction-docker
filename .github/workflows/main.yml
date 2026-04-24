@@ -60,11 +60,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Setup SSH key
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           mkdir -p ~/.ssh
-          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -t ed25519 zakaria.chaouch.takima.school >> ~/.ssh/known_hosts
+          ssh-keyscan -t ed25519 zakaria.chaouch.takima.school >> ~/.ssh/known_hosts 2>/dev/null
       - name: Create vault password file
         run: echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > .vault_pass
       - name: Run Ansible in Docker
